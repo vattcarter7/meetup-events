@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-
 import EventDashboard from '../../features/events/eventDashboard/EventDashboard';
 import NavBar from '../../features/nav/NavBar';
 import { Container } from 'semantic-ui-react';
@@ -8,12 +7,14 @@ import HomePage from '../../features/home/HomePage';
 import EventDetailedPage from '../../features/events/eventDetailed/EventDetailedPage';
 import EventForm from '../../features/events/eventForm/EventForm';
 import Sandbox from '../../features/sandbox/Sandbox';
+import ModalManager from '../common/modals/ModalManager';
 
-function App() {
+export default function App() {
   const { key } = useLocation();
 
   return (
     <Fragment>
+      <ModalManager />
       <Route exact path='/' component={HomePage} />
       <Route
         path={'/(.+)'}
@@ -36,5 +37,3 @@ function App() {
     </Fragment>
   );
 }
-
-export default App;

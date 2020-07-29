@@ -7,7 +7,8 @@ export function openModal(payload) {
     payload
   };
 }
-export function closeModal(payload) {
+
+export function closeModal() {
   return {
     type: CLOSE_MODAL
   };
