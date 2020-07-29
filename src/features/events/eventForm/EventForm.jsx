@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Segment, Header, Form, Button } from 'semantic-ui-react';
+import { Segment, Header, Button, FormField, Label } from 'semantic-ui-react';
 import cuid from 'cuid';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { createEvent, updateEvent } from '../eventActions';
-import { Formik } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
 const EventForm = ({ match, history }) => {
   const dispatch = useDispatch();
@@ -21,101 +22,65 @@ const EventForm = ({ match, history }) => {
     date: ''
   };
 
-  const [values, setValues] = useState(initialValues);
+  const validationSchema = Yup.object({
+    title: Yup.string().required('You must provide a title')
+  });
 
-  function handleFormSubmit() {
-    selectedEvent
-      ? dispatch(updateEvent({ ...selectedEvent, ...values }))
-      : dispatch(
-          createEvent({
-            ...values,
-            id: cuid(),
-            hostedBy: 'Bob',
-            attendees: [],
-            hostPhotoURL: '/assets/user.png'
-          })
-        );
-    history.push('/events');
-  }
-
-  function handleInputChange(e) {
-    const { name, value } = e.target;
-    setValues({ ...values, [name]: value });
-  }
+  // function handleFormSubmit() {
+  //   selectedEvent
+  //     ? dispatch(updateEvent({ ...selectedEvent, ...values }))
+  //     : dispatch(
+  //         createEvent({
+  //           ...values,
+  //           id: cuid(),
+  //           hostedBy: 'Bob',
+  //           attendees: [],
+  //           hostPhotoURL: '/assets/user.png'
+  //         })
+  //       );
+  //   history.push('/events');
+  // }
 
   return (
     <Segment clearing>
       <Header content={selectedEvent ? 'Edit the event' : 'Create new event'} />
       <Formik
         initialValues={initialValues}
+        validationSchema={validationSchema}
         onSubmit={(values) => console.log(values)}
       >
-        {({ values, handleChange, handleSubmit }) => (
-          <Form onSubmit={handleSubmit}>
-            <Form.Field>
-              <input
-                type='text'
-                placeholder='Event title'
-                name='title'
-                value={values.title}
-                onChange={handleChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <input
-                type='text'
-                placeholder='Category'
-                name='category'
-                value={values.category}
-                onChange={handleChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <input
-                type='text'
-                placeholder='Description'
-                name='description'
-                value={values.description}
-                onChange={handleChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <input
-                type='text'
-                placeholder='City'
-                name='city'
-                value={values.city}
-                onChange={handleChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <input
-                type='text'
-                placeholder='Venue'
-                name='venue'
-                value={values.venue}
-                onChange={handleChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <input
-                type='date'
-                placeholder='Date'
-                name='date'
-                value={values.date}
-                onChange={handleChange}
-              />
-            </Form.Field>
-            <Button type='submit' floated='right' positive content='Submit' />
-            <Button
-              as={Link}
-              to='/events'
-              type='submit'
-              floated='right'
-              content='Cancel'
+        <Form className='ui form'>
+          <FormField>
+            <Field name='title' placeholder='Event Title' />
+            <ErrorMessage
+              name='title'
+              render={(error) => <Label basic color='red' content={error} />}
             />
-          </Form>
-        )}
+          </FormField>
+          <FormField>
+            <Field name='category' placeholder='Category' />
+          </FormField>
+          <FormField>
+            <Field name='description' placeholder='Description' />
+          </FormField>
+          <FormField>
+            <Field name='city' placeholder='City' />
+          </FormField>
+          <FormField>
+            <Field name='venue' placeholder='Venue' />
+          </FormField>
+          <FormField>
+            <Field name='date' placeholder='Event Date' type='date' />
+          </FormField>
+          <Button type='submit' floated='right' positive content='Submit' />
+          <Button
+            as={Link}
+            to='/events'
+            type='submit'
+            floated='right'
+            content='Cancel'
+          />
+        </Form>
       </Formik>
     </Segment>
   );
