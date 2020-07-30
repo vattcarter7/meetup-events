@@ -1,7 +1,7 @@
 /* global google */
 
-import React from 'react';
-import { Segment, Header, Button } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Segment, Header, Button, Confirm } from 'semantic-ui-react';
 import { Link, Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { listenToEvents } from '../eventActions';
@@ -25,6 +25,8 @@ import { toast } from 'react-toastify';
 
 const EventForm = ({ match, history }) => {
   const dispatch = useDispatch();
+  const [loadingCanel, setLoadingCancel] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const selectedEvent = useSelector((state) =>
     state.event.events.find((e) => e.id === match.params.id)
   );
@@ -58,6 +60,18 @@ const EventForm = ({ match, history }) => {
     }),
     date: Yup.string().required()
   });
+
+  async function handleCancelToggle(event) {
+    setConfirmOpen(false);
+    setLoadingCancel(true);
+    try {
+      await cancelEventToggle(event);
+      setLoadingCancel(false);
+    } catch (error) {
+      setLoadingCancel(true);
+      toast.error(error.message);
+    }
+  }
 
   useFirestoreDoc({
     shouldExecute: !!match.params.id,
@@ -119,6 +133,7 @@ const EventForm = ({ match, history }) => {
             />
             {selectedEvent && (
               <Button
+                loading={loadingCanel}
                 type='button'
                 floated='left'
                 color={selectedEvent.isCancelled ? 'green' : 'red'}
@@ -127,7 +142,7 @@ const EventForm = ({ match, history }) => {
                     ? 'Reactivate Event'
                     : 'Cancel Event'
                 }
-                onClick={() => cancelEventToggle(selectedEvent)}
+                onClick={() => setConfirmOpen(true)}
               />
             )}
             <Button
@@ -149,6 +164,16 @@ const EventForm = ({ match, history }) => {
           </Form>
         )}
       </Formik>
+      <Confirm
+        content={
+          selectedEvent?.isCancelled
+            ? 'This will reactivate the event - are you sure?'
+            : 'This will cancel the event - are you sure?'
+        }
+        open={confirmOpen}
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={() => handleCancelToggle(selectedEvent)}
+      />
     </Segment>
   );
 };
