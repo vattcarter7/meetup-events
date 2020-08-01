@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
   Segment,
   Grid,
@@ -10,7 +10,7 @@ import {
   Button
 } from 'semantic-ui-react';
 
-const ProfileHeader = ({ profile }) => {
+const ProfileHeader = ({ profile, isCurrentUser }) => {
   return (
     <Segment>
       <Grid>
@@ -37,15 +37,19 @@ const ProfileHeader = ({ profile }) => {
             <Statistic label='Followers' value={10} />
             <Statistic label='Following' value={5} />
           </Statistic.Group>
-          <Divider />
-          <Reveal animated='move'>
-            <Reveal.Content visible style={{ width: '100%' }}>
-              <Button fluid color='teal' content='Following' />
-            </Reveal.Content>
-            <Reveal.Content hidden style={{ width: '100%' }}>
-              <Button basic fluid color='red' content='Unfollow' />
-            </Reveal.Content>
-          </Reveal>
+          {!isCurrentUser && (
+            <Fragment>
+              <Divider />
+              <Reveal animated='move'>
+                <Reveal.Content visible style={{ width: '100%' }}>
+                  <Button fluid color='teal' content='Following' />
+                </Reveal.Content>
+                <Reveal.Content hidden style={{ width: '100%' }}>
+                  <Button basic fluid color='red' content='Unfollow' />
+                </Reveal.Content>
+              </Reveal>
+            </Fragment>
+          )}
         </Grid.Column>
       </Grid>
     </Segment>
