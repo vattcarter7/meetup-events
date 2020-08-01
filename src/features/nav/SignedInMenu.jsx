@@ -35,6 +35,12 @@ const SignedInMenu = () => {
             icon='plus'
           />
           <Dropdown.Item text='My profile' icon='user' />
+          <Dropdown.Item
+            as={Link}
+            to='/account'
+            text='My account'
+            icon='settings'
+          />
           <Dropdown.Item onClick={handleSignOut} text='Sign Out' icon='power' />
         </Dropdown.Menu>
       </Dropdown>
