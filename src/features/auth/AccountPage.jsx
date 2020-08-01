@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 import MyTextInput from '../../app/common/form/MyTextInput';
 import { useSelector } from 'react-redux';
+import { updateUserPassword } from '../../app/firestore/firebaseService';
 
 const AccountPage = () => {
   const { currentUser } = useSelector((state) => state.auth);
@@ -25,8 +26,14 @@ const AccountPage = () => {
                 'Passwords do not match'
               )
             })}
-            onSubmit={(values) => {
-              console.log(values);
+            onSubmit={async (values, { setSubmitting, setErrors }) => {
+              try {
+                await updateUserPassword(values);
+              } catch (error) {
+                setErrors({ auth: error.message });
+              } finally {
+                setSubmitting(false);
+              }
             }}
           >
             {({ errors, isSubmitting, isValid, dirty }) => (
@@ -50,8 +57,10 @@ const AccountPage = () => {
                   />
                 )}
                 <Button
+                  style={{ display: 'block' }}
                   type='submit'
                   disabled={!isValid || isSubmitting || !dirty}
+                  loading={isSubmitting}
                   size='large'
                   positive
                   content='Update password'
