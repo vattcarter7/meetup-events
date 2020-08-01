@@ -20,7 +20,7 @@ const SignedInMenu = () => {
   }
 
   return (
-    <Menu.Item>
+    <Menu.Item position='right'>
       <Image
         avatar
         spaced='right'
