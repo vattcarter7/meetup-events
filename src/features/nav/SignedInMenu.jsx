@@ -34,7 +34,12 @@ const SignedInMenu = () => {
             text='Create Event'
             icon='plus'
           />
-          <Dropdown.Item text='My profile' icon='user' />
+          <Dropdown.Item
+            as={Link}
+            to={`/profile/${currentUser.uid}`}
+            text='My profile'
+            icon='user'
+          />
           <Dropdown.Item
             as={Link}
             to='/account'
