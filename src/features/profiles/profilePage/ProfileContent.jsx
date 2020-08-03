@@ -16,7 +16,7 @@ const ProfileContent = ({ profile, isCurrentUser }) => {
         <PhotosTab profile={profile} isCurrentUser={isCurrentUser} />
       )
     },
-    { menuItem: 'Events', render: () => <EventsTab /> },
+    { menuItem: 'Events', render: () => <EventsTab profile={profile} /> },
     { menuItem: 'Followers', render: () => <Tab.Pane>Followers</Tab.Pane> },
     { menuItem: 'Following', render: () => <Tab.Pane>Following</Tab.Pane> }
   ];
