@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Segment, Comment, Header } from 'semantic-ui-react';
 import EventDetailedChatForm from './EventDetailedChatForm';
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,6 +14,14 @@ import { CLEAR_COMMENTS } from '../eventConstants';
 const EventDetailedChat = ({ eventId }) => {
   const dispatch = useDispatch();
   const { comments } = useSelector((state) => state.event);
+  const [showReplyForm, setShowReplyForm] = useState({
+    open: false,
+    commentId: null
+  });
+
+  function handleCloseReplyForm() {
+    setShowReplyForm({ open: false, commentId: null });
+  }
 
   useEffect(() => {
     getEventChatRef(eventId).on('value', (snapshot) => {
@@ -42,7 +50,7 @@ const EventDetailedChat = ({ eventId }) => {
       </Segment>
 
       <Segment attached>
-        <EventDetailedChatForm eventId={eventId} />
+        <EventDetailedChatForm eventId={eventId} parentId={0} />
         <Comment.Group>
           {comments.map((comment) => (
             <Comment key={comment.id}>
@@ -63,7 +71,21 @@ const EventDetailedChat = ({ eventId }) => {
                   ))}
                 </Comment.Text>
                 <Comment.Actions>
-                  <Comment.Action>Reply</Comment.Action>
+                  <Comment.Action
+                    onClick={() =>
+                      setShowReplyForm({ open: true, commentId: comment.id })
+                    }
+                  >
+                    Reply
+                  </Comment.Action>
+                  {showReplyForm.open &&
+                    showReplyForm.commentId === comment.id && (
+                      <EventDetailedChatForm
+                        eventId={eventId}
+                        parentId={comment.id}
+                        closeForm={handleCloseReplyForm}
+                      />
+                    )}
                 </Comment.Actions>
               </Comment.Content>
             </Comment>
