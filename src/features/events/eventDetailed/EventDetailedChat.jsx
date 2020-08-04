@@ -9,6 +9,7 @@ import {
 import { listenToEventChat } from '../eventActions';
 import { Link } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
+import { CLEAR_COMMENTS } from '../eventConstants';
 
 const EventDetailedChat = ({ eventId }) => {
   const dispatch = useDispatch();
@@ -21,6 +22,11 @@ const EventDetailedChat = ({ eventId }) => {
         listenToEventChat(firebaseObjectToArray(snapshot.val()).reverse())
       );
     });
+
+    return () => {
+      dispatch({ type: CLEAR_COMMENTS });
+      getEventChatRef().off();
+    };
   }, [eventId, dispatch]);
 
   return (
