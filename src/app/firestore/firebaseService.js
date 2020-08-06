@@ -42,7 +42,6 @@ export async function socialLogin(selectedProvider) {
   if (selectedProvider === 'google') {
     provider = new firebase.auth.GoogleAuthProvider();
   }
-
   try {
     const result = await firebase.auth().signInWithPopup(provider);
     console.log(result);
@@ -82,10 +81,18 @@ export function addEventChatComment(eventId, values) {
     date: Date.now(),
     parentId: values.parentId
   };
-
   return firebase.database().ref(`chat/${eventId}`).push(newComment);
 }
 
 export function getEventChatRef(eventId) {
   return firebase.database().ref(`chat/${eventId}`).orderByKey();
+}
+
+export function getUserFeedRef() {
+  const user = firebase.auth().currentUser;
+  return firebase
+    .database()
+    .ref(`posts/${user.uid}`)
+    .orderByKey()
+    .limitToLast(5);
 }

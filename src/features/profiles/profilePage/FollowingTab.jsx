@@ -9,7 +9,7 @@ import {
 } from '../../../app/firestore/firestoreService';
 import { listenToFollowers, listenToFollowings } from '../profileActions';
 
-const FollowingTab = ({ profile, activeTab }) => {
+export default function FollowingTab({ profile, activeTab }) {
   const dispatch = useDispatch();
   const { followings, followers } = useSelector((state) => state.profile);
 
@@ -50,6 +50,4 @@ const FollowingTab = ({ profile, activeTab }) => {
       </Grid>
     </Tab.Pane>
   );
-};
-
-export default FollowingTab;
+}
